@@ -7,8 +7,8 @@ The repository contains a VS solution (StreamingService.sln) containing 2 projec
 
 StreamingService.Services.UserService is quite badly desgined/written.  You'll notice the other classes in the project are not full implemented; they exist only so that you will be able to build and eventually unit test the UserService.
 
-###Tasks:
-1. Review and re-write UserService, applying SOLID principles to the class(es)
+### Tasks:
+1. Review and re-write **UserService**, applying SOLID principles to the class(es)
 
 2. Write unit tests to provide code coverage for the improved UserService class(es) to demonstrate the improve code works, even though the repositories are unimplemented.
 
