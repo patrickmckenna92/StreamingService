@@ -16,18 +16,23 @@ namespace StreamingService.Services
                 return false;
             }
 
-            var userRepo = new UserRepository();
+            var context = new Context();
+            var userRepo = new UserRepository(context);
 
             if (userRepo.Exists(emailAddress))
             {
                 return false;
             }
 
-            var subscriptionRepository = new SubscriptionRepository();
+            var subscriptionRepository = new SubscriptionRepository(context);
 
             var subscrition = subscriptionRepository.GetById(subscriptionId);
 
-            var user = new User(emailAddress, subscriptionId);
+            var user = new User
+            {
+                EmailAddress = emailAddress,
+                SubscriptionId = subscriptionId,
+            };
 
             if (subscrition.Package == Packages.Freemium)
             {
@@ -41,7 +46,11 @@ namespace StreamingService.Services
             }
             else if (subscrition.Package == Packages.Unlimitted)
             {
-                user = new UnlimittedUser(emailAddress, subscriptionId);
+                user = new UnlimittedUser
+                {
+                    EmailAddress = emailAddress,
+                    SubscriptionId = subscriptionId,
+                };
             }
 
             userRepo.Add(user);
@@ -53,8 +62,9 @@ namespace StreamingService.Services
 
         public IEnumerable<User> GetUsers()
         {
-            //...
-            throw new NotImplementedException();
+            var context = new Context();
+            var userRepo = new UserRepository(context);
+            return userRepo.GetAll();
         }
 
         public IEnumerable<User> GetUsersWithRemainingSongsThisMonth()
@@ -69,11 +79,13 @@ namespace StreamingService.Services
         /// </summary>
         public void ResetRemainingSongsThisMonth()
         {
-            var userRepository = new UserRepository();
+            var context = new Context();
+            var userRepository = new UserRepository(context);
             foreach (User u in userRepository.GetAll())
             {
                 u.ResetRemainingSongsThisMonth();
             }
+            context.SaveChanges();
         }
 
     }

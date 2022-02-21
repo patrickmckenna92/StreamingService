@@ -1,24 +1,35 @@
 ﻿using StreamingService.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace StreamingService.Repositories
 {
     public class UserRepository
     {
-        public bool Exists(string EmailAddress)
+        private readonly Context _context;
+
+        public UserRepository(Context context)
         {
-            throw new NotImplementedException();
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+        }
+
+        public bool Exists(string emailAddress)
+        {
+            var result = this._context.Users.Any(x => x.EmailAddress == emailAddress);
+            return result;
         }
 
         public IEnumerable<User> GetAll()
         {
-            throw new NotImplementedException();
+            var result = this._context.Users.ToList();
+            return result;
         }
 
         public void Add(User user)
         {
-            throw new NotImplementedException();
+            this._context.Users.Add(user);
+            this._context.SaveChanges();
         }
     }
 }

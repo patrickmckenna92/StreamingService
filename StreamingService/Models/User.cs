@@ -1,19 +1,16 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace StreamingService.Models
 {
     public class User
     {
-        public string EmailAddress { get; private set; }
-        public Guid SubscriptionId { get; private set; }
+        public Guid Id { get; set; }
+        public string EmailAddress { get; set; }
+        public Guid SubscriptionId { get; set; }
+        public Subscription Subscription { get; set; }
         public int FreeSongs { get; set; }
         public int RemainingSongsThisMonth { get; set; }
-
-        public User(string emailAddress, Guid subscriptionId)
-        {
-            this.EmailAddress = emailAddress;
-            this.SubscriptionId = subscriptionId;
-        }
 
         public virtual void ResetRemainingSongsThisMonth()
         {
@@ -23,10 +20,6 @@ namespace StreamingService.Models
 
     public class UnlimittedUser : User
     {
-        public UnlimittedUser(string emailAddress, Guid subscriptionId) : base(emailAddress, subscriptionId)
-        {
-        }
-
         public override void ResetRemainingSongsThisMonth()
         {
             throw new NotImplementedException();

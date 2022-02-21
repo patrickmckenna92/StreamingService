@@ -4,7 +4,8 @@ namespace StreamingService.Models
 {
     public class Subscription
     {
-        public Guid Id { get; }
-        public Packages Package { get; }
+        public Guid Id { get; set; }
+        public Packages Package { get; set; }
+        public double Price { get; set; }
     }
 }
