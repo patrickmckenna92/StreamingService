@@ -8,7 +8,10 @@ The repository contains a VS solution (StreamingService.sln) containing 2 projec
 You'll notice that StreamingService is quite badly designed/written.  
 
 ### Tasks:
-1. Review and re-write **UserService**, applying SOLID principles to the class(es) demonstrating:
+
+1. Implement UserService.GetUsersWithRemainingSongsThisMonth().
+
+2. Review and re-write **UserService**, applying SOLID principles to the class(es) demonstrating:
     - Understanding of the Single Responsibility principle
     - Open Closed principle
     - Liskov Substitution principle 
@@ -17,7 +20,7 @@ You'll notice that StreamingService is quite badly designed/written.
     - Improve the code with any other coding standard you feel is appropriate - please explain your approach.
  If you cannot do all of these please attempt the once you can and explain you understanding of the others.  
 
-2. Write unit tests to provide code coverage for the improved UserService class(es) to demonstrate the improve code works.
+3. Write unit tests to provide code coverage for the improved UserService class(es) to demonstrate the improve code works.
    - If able, demonstrate you ability to mock dependencies
    - Assert dependencies were correctly called
    - Assert the results are as they should be
