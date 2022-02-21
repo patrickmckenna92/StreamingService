@@ -5,15 +5,25 @@ The repository contains a VS solution (StreamingService.sln) containing 2 projec
 - StreamingService
 - StreamingService.Test
 
-StreamingService.Services.UserService is quite badly desgined/written.  You'll notice the other classes in the project are not full implemented; they exist only so that you will be able to build and eventually unit test the UserService.
+You'll notice that StreamingService is quite badly designed/written.  
 
 ### Tasks:
-1. Review and re-write **UserService**, applying SOLID principles to the class(es)
+1. Review and re-write **UserService**, applying SOLID principles to the class(es) demonstrating:
+    - Understanding of the Single Responsibility principle
+    - Open Closed principle
+    - Liskov Substitution principle 
+    - Interface Segregation principle
+    - Dependency Injection principle
+    - Improve the code with any other coding standard you feel is appropriate - please explain your approach.
+ If you cannot do all of these please attempt the once you can and explain you understanding of the others.  
 
-2. Write unit tests to provide code coverage for the improved UserService class(es) to demonstrate the improve code works, even though the repositories are unimplemented.
+2. Write unit tests to provide code coverage for the improved UserService class(es) to demonstrate the improve code works.
+   - If able, demonstrate you ability to mock dependencies
+   - Assert dependencies were correctly called
+   - Assert the results are as they should be
 
 There isn’t a perfect or correct answer, and do not worry if you cannot get all the tests working.  This exercise is designed to gauge your level of understanding and I am looking to see your approach.
 
-Zip your solution and email it to lphillips@basemap.co.uk, for fork this repo and share a link. 
+Fork the solution, make your changes and email a link to lphillips@basemap.co.uk along with any commentary you wish to include. 
 
-If you feel it helpful, feel free to explain your reasoning in comments.  You will not mark you down for over commenting on this exercise.
+If you feel it helpful, feel free to explain your reasoning in comments.  You will not marked down for over commenting on this exercise.
