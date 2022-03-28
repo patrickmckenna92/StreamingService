@@ -5,6 +5,8 @@ using StreamingService.Services;
 using System;
 using System.Collections.Generic;
 
+
+
 namespace StreamingService.Controllers
 {
     [Route("api/[controller]")]
@@ -14,6 +16,8 @@ namespace StreamingService.Controllers
         [HttpPost]
         public void Subscribe([FromBody] SubscribeModel model)
         {
+            //Initial Test!
+
             var userService = new UserService();
             userService.Subscribe(model.EmailAddress, model.SubscriptionId);
         }
