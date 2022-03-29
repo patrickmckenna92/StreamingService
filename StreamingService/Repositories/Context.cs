@@ -3,14 +3,14 @@ using StreamingService.Models;
 
 namespace StreamingService.Repositories
 {
-    public class Context : DbContext
+    public class Context : DbContext, IContext
     {
         public Context(DbContextOptions<Context> options) : base(options)
         {
         }
 
         public Context()
-        { 
+        {
         }
 
         public DbSet<User> Users { get; set; }

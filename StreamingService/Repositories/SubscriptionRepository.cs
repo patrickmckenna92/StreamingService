@@ -4,13 +4,13 @@ using System.Linq;
 
 namespace StreamingService.Repositories
 {
-    public class SubscriptionRepository
+    public class SubscriptionRepository : ISubscriptionRepository
     {
         private readonly Context _context;
 
         public SubscriptionRepository(Context context)
         {
-            _context = context ?? throw new ArgumentNullException(nameof(context));
+            _context = new Context();
         }
 
         public Subscription GetById(Guid id)

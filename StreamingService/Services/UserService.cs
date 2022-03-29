@@ -2,75 +2,92 @@
 using StreamingService.Repositories;
 using System;
 using System.Collections.Generic;
+using StreamingService.Loggers;
+using StreamingService.Factory;
+using StreamingService.Helper;
 
 namespace StreamingService.Services
 {
-    public class UserService
+    public class UserService : IUserService
     {
-        public bool Subscribe(string emailAddress, Guid subscriptionId)
+
+        private IUserRepository userRepo;
+        private ISubscriptionService subscriptionService;
+
+        // Inject in the userRepo so that we can swap out the data source.
+        // Creates a dependency inversion as lower module dependant on caller.
+        //
+        public UserService(IUserRepository userRepo, ISubscriptionService subscriptionService)
         {
-            Console.WriteLine(string.Format("Log: Start add user with email '{0}'", emailAddress));
+            this.userRepo = userRepo;
+            this.subscriptionService = subscriptionService;
+        }
 
-            if (string.IsNullOrWhiteSpace(emailAddress))
+
+        // Having two parameters means if we want to pass more data to this method we will have to change it every time.
+        // Also makes sense that if this is the user class, it should only really deal with User objects. SRP
+        public bool Subscribe(User user)
+        {
+            //factory means we could easily change the messages displayed without making changes to the UserLogger class.
+            IUserLogger userLogger = Factory.GetUserLogger();
+            userLogger.StartSubscribeMessage(user);
+
+            if (string.IsNullOrWhiteSpace(user.EmailAddress))
             {
                 return false;
             }
 
-            var context = new Context();
-            var userRepo = new UserRepository(context);
-
-            if (userRepo.Exists(emailAddress))
+            if (userRepo.Exists(user.EmailAddress))
             {
                 return false;
             }
 
-            var subscriptionRepository = new SubscriptionRepository(context);
 
-            var subscrition = subscriptionRepository.GetById(subscriptionId);
+            user.Subscription = subscriptionService.GetById(user.Subscription.Id);
 
-            var user = new User
-            {
-                EmailAddress = emailAddress,
-                SubscriptionId = subscriptionId,
-            };
+            // didn't really know what to do with unlimitted user.
+            // I removed it from the program as it was violating lsp and I moved ResetRemainingSongsThisMonth to this class so  it was the same as User
+            // It would make more sense for there to be a LimittedUser class that inherits which contains functionality for tracking listened to songs.
 
-            if (subscrition.Package == Packages.Freemium)
-            {
-                user.FreeSongs = 3;
-                user.RemainingSongsThisMonth = user.FreeSongs;
-            }
-            else if (subscrition.Package == Packages.Premium)
-            {
-                user.FreeSongs = 3 * 5;
-                user.RemainingSongsThisMonth = user.FreeSongs;
-            }
-            else if (subscrition.Package == Packages.Unlimitted)
-            {
-                user = new UnlimittedUser
-                {
-                    EmailAddress = emailAddress,
-                    SubscriptionId = subscriptionId,
-                };
-            }
+            //else if (subscrition.Package == Packages.Unlimitted)
+            //{
+            //    user = new UnlimittedUser
+            //    {
+            //        EmailAddress = emailAddress,
+            //        SubscriptionId = subscriptionId,
+            //    };
+            //}
+
+
+            //If we want to change the calculation for free songs we could swap this out for another implementation easily using factory
+            IPackageHelper packageHelper = Factory.GetPackageHelper();
+            user.FreeSongs = packageHelper.CalculateFreeSongs(user.Subscription.Package);
+            ResetRemainingSongsThisMonthSingleUser(user);
 
             userRepo.Add(user);
 
-            Console.WriteLine(string.Format("Log: End add user with email '{0}'", emailAddress));
+            userLogger.EndSubscribeMessage(user);
 
             return true;
         }
 
         public IEnumerable<User> GetUsers()
         {
-            var context = new Context();
-            var userRepo = new UserRepository(context);
             return userRepo.GetAll();
         }
 
         public IEnumerable<User> GetUsersWithRemainingSongsThisMonth()
         {
-            //Todo
-            throw new NotImplementedException();
+            List<User> users = new List<User>();
+            foreach (User u in userRepo.GetAll())
+            {
+                // could maybe do an "or" for if they have an unlimtted subscription as they will always have songs remaining.
+                if (u.RemainingSongsThisMonth != 0)
+                {
+                    users.Add(u);
+                }
+            }
+            return users;
         }
 
         /// <summary>
@@ -79,15 +96,21 @@ namespace StreamingService.Services
         /// </summary>
         public void ResetRemainingSongsThisMonth()
         {
-            var context = new Context();
-            var userRepository = new UserRepository(context);
-            foreach (User u in userRepository.GetAll())
+            foreach (User u in userRepo.GetAll())
             {
-                u.ResetRemainingSongsThisMonth();
+                ResetRemainingSongsThisMonthSingleUser(u);
             }
-            context.SaveChanges();
+            userRepo.SaveChanges();
         }
 
+
+        // Moved method that was in user to UserService.
+        // As we have a UserService may as well keep functionality for user objects in one place.
+        // That way if we want to change the way data is stored we can change the user class. If we want to change functionality we can change the UserService class. 
+        public void ResetRemainingSongsThisMonthSingleUser(User user)
+        {
+            user.RemainingSongsThisMonth = user.FreeSongs;
+        }
     }
 
 

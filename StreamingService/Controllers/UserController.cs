@@ -1,9 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using StreamingService.Models;
+﻿using StreamingService.Models;
 using StreamingService.Services;
-using System;
-using System.Collections.Generic;
+
 
 
 
@@ -18,8 +15,22 @@ namespace StreamingService.Controllers
         {
             //Initial Test!
 
-            var userService = new UserService();
-            userService.Subscribe(model.EmailAddress, model.SubscriptionId);
+            var userService = Factory.GetUserService();
+            User user = new User();
+            user.EmailAddress = model.EmailAddress;
+
+            ISubscriptionService ss = Factory.GetSubscriptionService();
+            user.Subscription = ss.GetById(model.SubscriptionId);
+
+
+            
+            
+
+
+            user.EmailAddress = model.EmailAddress;
+                     
+            var result = userService.Subscribe(user);
+            return result;
         }
 
         [HttpGet]

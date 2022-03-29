@@ -5,13 +5,16 @@ using System.Linq;
 
 namespace StreamingService.Repositories
 {
-    public class UserRepository
+    public class UserRepository : IUserRepository
     {
         private readonly Context _context;
 
-        public UserRepository(Context context)
+        public UserRepository()
         {
-            _context = context ?? throw new ArgumentNullException(nameof(context));
+
+            //thought it would be a good idea to create the context within the classes implementation as it is
+            // to do with entity framework. It's possible to implement a repository without a context so didn't make sense to have it as a parameter.
+            _context = new Context();
         }
 
         public bool Exists(string emailAddress)
@@ -29,6 +32,11 @@ namespace StreamingService.Repositories
         public void Add(User user)
         {
             this._context.Users.Add(user);
+            this._context.SaveChanges();
+        }
+
+        public void SaveChanges()
+        {
             this._context.SaveChanges();
         }
     }
